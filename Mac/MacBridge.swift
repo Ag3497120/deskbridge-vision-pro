@@ -69,10 +69,21 @@ final class MacBridge: NSObject, ObservableObject {
         switch event.kind {
         case .key:
             guard let code = event.keyCode, code <= 127 else { return }
-            if event.shift == true { postKey(56, down: true) }
-            postKey(code, down: true)
-            postKey(code, down: false)
-            if event.shift == true { postKey(56, down: false) }
+            var flags: CGEventFlags = []
+            if event.shift == true { flags.insert(.maskShift) }
+            if event.command == true { flags.insert(.maskCommand) }
+            if event.option == true { flags.insert(.maskAlternate) }
+            if event.control == true { flags.insert(.maskControl) }
+            let modifiers: [(Bool, UInt16)] = [
+                (event.control == true, 59), (event.option == true, 58),
+                (event.shift == true, 56), (event.command == true, 55)
+            ]
+            for (active, modifier) in modifiers where active { postKey(modifier, down: true) }
+            postKey(code, down: true, flags: flags)
+            postKey(code, down: false, flags: flags)
+            for (active, modifier) in modifiers.reversed() where active {
+                postKey(modifier, down: false)
+            }
         case .pointer:
             let dx = max(-100, min(100, event.deltaX ?? 0))
             let dy = max(-100, min(100, event.deltaY ?? 0))
@@ -101,8 +112,10 @@ final class MacBridge: NSObject, ObservableObject {
         }
     }
 
-    private func postKey(_ code: UInt16, down: Bool) {
-        CGEvent(keyboardEventSource: eventSource, virtualKey: code, keyDown: down)?.post(tap: .cghidEventTap)
+    private func postKey(_ code: UInt16, down: Bool, flags: CGEventFlags = []) {
+        let event = CGEvent(keyboardEventSource: eventSource, virtualKey: code, keyDown: down)
+        event?.flags = flags
+        event?.post(tap: .cghidEventTap)
     }
 
     private func releaseDrag() {

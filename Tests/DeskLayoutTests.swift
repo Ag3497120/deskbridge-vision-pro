@@ -4,7 +4,13 @@ import simd
 @main
 enum DeskLayoutTests {
     static func main() {
-        assert(DeskLayout.keys.count >= 45)
+        assert(DeskLayout.keys.count >= 55)
+        for key in DeskLayout.keys {
+            assert(key.centerX - key.width / 2 >=
+                   DeskLayout.keyboardCenterX - DeskLayout.keyboardWidth / 2)
+            assert(key.centerX + key.width / 2 <=
+                   DeskLayout.keyboardCenterX + DeskLayout.keyboardWidth / 2)
+        }
         let firstKey = DeskLayout.keys[0]
         assert(DeskLayout.key(at: SIMD3<Float>(firstKey.centerX, 0, firstKey.centerZ)) != nil)
         assert(DeskLayout.key(at: SIMD3<Float>(1, 0, 0)) == nil)
@@ -20,7 +26,7 @@ enum DeskLayoutTests {
         let onA = SIMD3<Float>(a.centerX, 0.005, a.centerZ)
         assert(engine.process(finger: "index", point: aboveA, time: 0).isEmpty)
         assert(engine.process(finger: "index", point: onA, time: 0.1) ==
-               [InputEvent(kind: .key, keyCode: a.keyCode, shift: false)])
+               [InputEvent(kind: .key, keyCode: a.keyCode)])
         assert(engine.process(finger: "index", point: onA, time: 0.2).isEmpty)
         assert(engine.process(finger: "index", point: aboveA, time: 0.3).isEmpty)
 
@@ -31,6 +37,16 @@ enum DeskLayoutTests {
         assert(engine.process(finger: "index", point: onA, time: 0.6) ==
                [InputEvent(kind: .key, keyCode: a.keyCode, shift: true)])
         assert(!engine.shiftEnabled)
+
+        guard let command = DeskLayout.keys.first(where: { $0.keyCode == 55 }) else {
+            fatalError("Command key is missing")
+        }
+        let onCommand = SIMD3<Float>(command.centerX, 0.005, command.centerZ)
+        assert(engine.process(finger: "index", point: aboveA, time: 0.7).isEmpty)
+        assert(engine.process(finger: "index", point: onCommand, time: 0.8).isEmpty)
+        assert(engine.process(finger: "index", point: aboveA, time: 0.9).isEmpty)
+        assert(engine.process(finger: "index", point: onA, time: 1.0) ==
+               [InputEvent(kind: .key, keyCode: a.keyCode, command: true)])
 
         let pad = SIMD3<Float>(DeskLayout.trackpadCenterX, 0.005, 0)
         let moved = SIMD3<Float>(DeskLayout.trackpadCenterX + 0.01, 0.005, 0)

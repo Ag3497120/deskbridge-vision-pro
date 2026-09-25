@@ -15,6 +15,9 @@ struct InputEvent: Codable, Equatable {
     let kind: Kind
     var keyCode: UInt16?
     var shift: Bool?
+    var command: Bool?
+    var option: Bool?
+    var control: Bool?
     var deltaX: Double?
     var deltaY: Double?
 
@@ -22,6 +25,9 @@ struct InputEvent: Codable, Equatable {
         kind: Kind,
         keyCode: UInt16? = nil,
         shift: Bool? = nil,
+        command: Bool? = nil,
+        option: Bool? = nil,
+        control: Bool? = nil,
         deltaX: Double? = nil,
         deltaY: Double? = nil
     ) {
@@ -29,6 +35,9 @@ struct InputEvent: Codable, Equatable {
         self.kind = kind
         self.keyCode = keyCode
         self.shift = shift
+        self.command = command
+        self.option = option
+        self.control = control
         self.deltaX = deltaX
         self.deltaY = deltaY
     }

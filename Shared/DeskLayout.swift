@@ -23,7 +23,19 @@ enum DeskLayout {
     static let trackpadWidth: Float = 0.28
     static let trackpadDepth: Float = 0.23
     static let trackpadCenterX: Float = 0.31
-    static let keyDepth: Float = 0.038
+    static let keyDepth: Float = 0.035
+    static let modifierCodes: Set<UInt16> = [56, 60, 55, 54, 58, 61, 59, 62]
+
+    static func normalizedModifier(_ code: UInt16) -> UInt16? {
+        guard modifierCodes.contains(code) else { return nil }
+        switch code {
+        case 60: return 56
+        case 54: return 55
+        case 61: return 58
+        case 62: return 59
+        default: return code
+        }
+    }
 
     private struct Definition {
         let label: String
@@ -41,16 +53,17 @@ enum DeskLayout {
 
     /// ANSI virtual key codes. macOS applies the user's active keyboard input source.
     private static let rows: [[Definition]] = [
-        [Definition("esc", 53), Definition("1", 18, 1, "!"), Definition("2", 19, 1, "@"), Definition("3", 20, 1, "#"), Definition("4", 21, 1, "$"), Definition("5", 23, 1, "%"), Definition("6", 22, 1, "^"), Definition("7", 26, 1, "&"), Definition("8", 28, 1, "*"), Definition("9", 25, 1, "("), Definition("0", 29, 1, ")"), Definition("⌫", 51, 1.7)],
-        [Definition("tab", 48, 1.45), Definition("Q", 12), Definition("W", 13), Definition("E", 14), Definition("R", 15), Definition("T", 17), Definition("Y", 16), Definition("U", 32), Definition("I", 34), Definition("O", 31), Definition("P", 35), Definition("↵", 36, 1.55)],
-        [Definition("⇧", 56, 1.75), Definition("A", 0), Definition("S", 1), Definition("D", 2), Definition("F", 3), Definition("G", 5), Definition("H", 4), Definition("J", 38), Definition("K", 40), Definition("L", 37), Definition(";", 41, 1, ":"), Definition("'", 39, 1, "\""), Definition("⇧", 60, 1.05)],
-        [Definition("Z", 6), Definition("X", 7), Definition("C", 8), Definition("V", 9), Definition("B", 11), Definition("N", 45), Definition("M", 46), Definition(",", 43, 1, "<"), Definition(".", 47, 1, ">"), Definition("/", 44, 1, "?"), Definition("space", 49, 3.8)]
+        [Definition("esc", 53), Definition("1", 18, 1, "!"), Definition("2", 19, 1, "@"), Definition("3", 20, 1, "#"), Definition("4", 21, 1, "$"), Definition("5", 23, 1, "%"), Definition("6", 22, 1, "^"), Definition("7", 26, 1, "&"), Definition("8", 28, 1, "*"), Definition("9", 25, 1, "("), Definition("0", 29, 1, ")"), Definition("-", 27, 1, "_"), Definition("=", 24, 1, "+"), Definition("⌫", 51, 1.6)],
+        [Definition("tab", 48, 1.4), Definition("Q", 12), Definition("W", 13), Definition("E", 14), Definition("R", 15), Definition("T", 17), Definition("Y", 16), Definition("U", 32), Definition("I", 34), Definition("O", 31), Definition("P", 35), Definition("[", 33, 1, "{"), Definition("]", 30, 1, "}"), Definition("\\", 42, 1, "|")],
+        [Definition("caps", 57, 1.6), Definition("A", 0), Definition("S", 1), Definition("D", 2), Definition("F", 3), Definition("G", 5), Definition("H", 4), Definition("J", 38), Definition("K", 40), Definition("L", 37), Definition(";", 41, 1, ":"), Definition("'", 39, 1, "\""), Definition("↵", 36, 1.8)],
+        [Definition("⇧", 56, 1.8), Definition("Z", 6), Definition("X", 7), Definition("C", 8), Definition("V", 9), Definition("B", 11), Definition("N", 45), Definition("M", 46), Definition(",", 43, 1, "<"), Definition(".", 47, 1, ">"), Definition("/", 44, 1, "?"), Definition("⇧", 60, 1.8)],
+        [Definition("ctrl", 59, 1.2), Definition("opt", 58, 1.2), Definition("⌘", 55, 1.4), Definition("space", 49, 5), Definition("⌘", 54, 1.4), Definition("opt", 61, 1.2), Definition("←", 123), Definition("↓", 125), Definition("→", 124)]
     ]
 
     static let keys: [DeskKey] = {
         let gap: Float = 0.003
         let usableWidth = keyboardWidth - 0.014
-        let zCenters: [Float] = [-0.087, -0.029, 0.029, 0.087]
+        let zCenters: [Float] = [-0.092, -0.046, 0, 0.046, 0.092]
         return rows.enumerated().flatMap { rowIndex, definitions in
             let unit = (usableWidth - gap * Float(definitions.count - 1)) / definitions.reduce(0) { $0 + $1.units }
             var left = keyboardCenterX - usableWidth / 2
@@ -91,7 +104,8 @@ final class DeskInteraction {
     private var dragging: Set<String> = []
     private var lastKeyTime: [String: TimeInterval] = [:]
     var touchHeight: Float = 0.012
-    var shiftEnabled = false
+    private var modifiers: Set<UInt16> = []
+    var shiftEnabled: Bool { modifiers.contains(56) }
 
     func process(finger: String, point: SIMD3<Float>?, time: TimeInterval) -> [InputEvent] {
         guard let point else {
@@ -129,11 +143,14 @@ final class DeskInteraction {
             let previous = lastPadPoint[finger]
             lastPadPoint[finger] = point
             if padStart[finger] == nil { padStart[finger] = (point, time) }
+            let middleID = finger.replacingOccurrences(of: "-index", with: "-middle")
+            let isScrolling = finger.hasSuffix("-index") && lastPadPoint[middleID] != nil
             if let start = padStart[finger],
                simd_distance(point, start.point) > 0.008 {
                 padMoved.insert(finger)
             }
             if let start = padStart[finger],
+               !isScrolling,
                !padMoved.contains(finger),
                !dragging.contains(finger),
                time - start.time > 0.5 {
@@ -144,8 +161,7 @@ final class DeskInteraction {
             let dx = Double(point.x - previous.x) * 2600
             let dy = Double(point.z - previous.z) * 2600
             guard abs(dx) + abs(dy) > 1.5 else { return [] }
-            let middleID = finger.replacingOccurrences(of: "-index", with: "-middle")
-            if finger.hasSuffix("-index"), lastPadPoint[middleID] != nil {
+            if isScrolling {
                 return [InputEvent(kind: .scroll, deltaY: dy / 15)]
             }
             return [InputEvent(kind: .pointer, deltaX: dx, deltaY: dy)]
@@ -155,13 +171,18 @@ final class DeskInteraction {
               let key = DeskLayout.key(at: point) else { return [] }
         guard time - (lastKeyTime[finger] ?? -.infinity) > 0.09 else { return [] }
         lastKeyTime[finger] = time
-        if key.keyCode == 56 || key.keyCode == 60 {
-            shiftEnabled.toggle()
+        if let normalized = DeskLayout.normalizedModifier(key.keyCode) {
+            if modifiers.contains(normalized) { modifiers.remove(normalized) }
+            else { modifiers.insert(normalized) }
             return []
         }
-        let shifted = shiftEnabled
-        shiftEnabled = false
-        return [InputEvent(kind: .key, keyCode: key.keyCode, shift: shifted)]
+        let active = modifiers
+        modifiers.removeAll()
+        return [InputEvent(kind: .key, keyCode: key.keyCode,
+                           shift: active.contains(56) ? true : nil,
+                           command: active.contains(55) ? true : nil,
+                           option: active.contains(58) ? true : nil,
+                           control: active.contains(59) ? true : nil)]
     }
 
     func reset() {
@@ -172,6 +193,6 @@ final class DeskInteraction {
         dragging.removeAll()
         armed.removeAll()
         lastKeyTime.removeAll()
-        shiftEnabled = false
+        modifiers.removeAll()
     }
 }

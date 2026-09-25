@@ -5,7 +5,7 @@ import SwiftUI
 /// Placement is performed with the system's volume handle, so no raw ARKit data is read.
 struct SharedDeskView: View {
     @ObservedObject var bridge: VisionBridge
-    @State private var shiftEnabled = false
+    @State private var modifiers: Set<UInt16> = []
     @State private var dragActive = false
     @State private var lastDragX = 0.0
     @State private var lastDragZ = 0.0
@@ -30,12 +30,16 @@ struct SharedDeskView: View {
                           let index = Int(name.dropFirst(4)),
                           DeskLayout.keys.indices.contains(index) else { return }
                     let key = DeskLayout.keys[index]
-                    if key.keyCode == 56 || key.keyCode == 60 {
-                        shiftEnabled.toggle()
+                    if let normalized = DeskLayout.normalizedModifier(key.keyCode) {
+                        if modifiers.contains(normalized) { modifiers.remove(normalized) }
+                        else { modifiers.insert(normalized) }
                     } else {
                         bridge.send(InputEvent(kind: .key, keyCode: key.keyCode,
-                                               shift: shiftEnabled))
-                        shiftEnabled = false
+                                               shift: modifiers.contains(56) ? true : nil,
+                                               command: modifiers.contains(55) ? true : nil,
+                                               option: modifiers.contains(58) ? true : nil,
+                                               control: modifiers.contains(59) ? true : nil))
+                        modifiers.removeAll()
                     }
                 }
         )
