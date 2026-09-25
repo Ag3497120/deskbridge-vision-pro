@@ -1,56 +1,55 @@
-# 入力先を増やすための設計
+# 入力機器の偽装とアプリ表示の設計
 
-DeskBridge の机上入力は、入力を検出する部分と入力先を分けて考える。現在の公開版は、Vision Pro アプリから暗号化したローカル接続で Mac アプリへ送り、Mac アプリが macOS の入力イベントを発行する。この経路は Mac 仮想ディスプレイだけでなく、その Mac 上で動く通常のアプリやリモートデスクトップクライアントにも使える。
+DeskBridge の現行版は、Vision Pro の机上ボリュームで発生した入力を暗号化したローカル接続で Mac アプリに送り、Mac アプリが `CGEvent` で macOS に入力する。この経路で Mac 仮想ディスプレイ、Mac 上の通常アプリ、Mac 上のリモートデスクトップクライアントを操作する構成になっている。以下は、ソフトウェアで機器を偽装する案と、DeskBridge を visionOS 上の操作レイヤーにする案の成立条件。
 
-## Bluetooth HID 経路
+## ソフトウェアでキーボード／マウスを偽装する
 
 ```text
-机上のキー／ポインタ操作
-    → Vision Pro の DeskBridge アプリ（共有空間のボリューム）
-    → 認証済みのローカル接続
-    → 外付け BLE HID ブリッジ
-    → Bluetooth キーボード＋マウスとしてペアリングした入力先
+机上入力 → Vision Pro アプリ → 暗号化したローカル接続
+         → Mac アプリ → macOS の仮想HID機器 → 入力先アプリ
 ```
 
-Vision Pro アプリ単体を Bluetooth キーボードとして Mac にペアリングする方式は採れない。visionOS の公開 Core Bluetooth API は、アプリが周辺機器としてサービスを広告する機能を提供しない。Mac に「Bluetooth 入力機器」として認識させるなら、BLE HID を広告する外付け機器が必要になる。
+Apple の macOS `CoreHID.HIDVirtualDevice` は、ソフトウェアで作った HID キーボード／マウスのレポートを OS に送れる。この方式に追加の BLE 機器は要らない。ただし `com.apple.developer.hid.virtual.device` 権限が必要で、配布には Apple による権限付与と署名の確認が必要。手元の Xcode 26 では CoreHID は macOS SDK にあり、visionOS SDK にはない。権限のないローカルプローブで Apple の例と同じキーボード記述子から仮想機器を作ると、生成に失敗した。
 
-ESP32-S3 はブリッジの候補で、Espressif の公式サンプルに BLE HID デバイスがあり、Wi-Fi と BLE の同時利用もサポートされる。ただし DeskBridge のファームウェア、ペアリング手順、遅延、Vision Pro と Mac への接続互換性は未実装・未検証。現段階で特定の基板を購入しても、完成品として動くことは保証できない。
+これは **Mac の中で HID 機器を偽装する方式**。Mac の Bluetooth 設定に Vision Pro が現れ、無線でペアリングされる方式ではない。Vision Pro 自身が BLE HID の広告・ペアリングを行うには周辺機器機能が要るが、visionOS の公開 `CBPeripheralManager` では広告できない。HID のバイト列だけを送っても Bluetooth の接続にはならない。
 
-標準 HID の最初の目標はキー入力、相対ポインタ移動、クリック、ドラッグ、ホイールスクロール。写真のような面を描画するのは Vision Pro アプリの役割であり、BLE HID ブリッジが机や指を検出するわけではない。Magic Trackpad と同じ複数指ジェスチャーは、この標準マウス経路の対象外。
+Apple は Mac 仮想ディスプレイ中、Mac のキーボード／トラックパッドなどで visionOS アプリも操作できると説明している。したがって **Mac の仮想HID機器が visionOS アプリへの入力共有にも乗る可能性がある**。仮想機器も転送対象になるか、DeskBridge ボリュームを触った直後に目的のアプリが入力先であり続けるかは、Vision Pro 実機での確認が必要。Mac 仮想ディスプレイを接続していない場合、この Mac 経路から visionOS アプリを操作できるとは言えない。
 
-## 入力先ごとの成立条件
+## DeskBridge を visionOS 全体のシールドにする
 
-| 入力先 | 実現経路 | 通常の共有空間 | 条件・未検証点 |
-| --- | --- | --- | --- |
-| Mac 仮想ディスプレイ | 現在の Mac アプリ、または将来の BLE HID ブリッジを Mac にペアリング | 可 | 現在の Mac アプリ経路も実機での入力検証が必要。 |
-| Mac 上の通常のアプリ／リモートデスクトップクライアント | 同上 | 可 | Mac 側で前面・入力先になっているアプリに届く。リモートデスクトップ側が入力を転送する設定も必要。 |
-| Vision Pro 上の他社リモートデスクトップアプリ | ブリッジを Vision Pro にペアリングする案、またはリモートホストを直接操作する案 | 一部可能性あり | 他社アプリへ DeskBridge が直接イベントを送る公開 API はない。Vision Pro にペアリングした場合、机上ボリュームに触れた後のフォーカス先を実機で確認する必要がある。ホストへ直接 BLE 接続する案は、ホストがブリッジの Bluetooth 圏内にある場合に限る。 |
-| Vision Pro 上の通常の他社アプリ | ブリッジを Vision Pro にペアリングする案 | 一部可能性あり | OS が現在フォーカスしているアプリへ HID 入力を配送する。DeskBridge のボリュームへのタップがフォーカスを移す可能性があり、任意のアプリへの透過的入力は保証できない。 |
+```text
+希望する形: DeskBridge が全アプリの画面を内包し、
+            入力を一括で受け取って各アプリに転送する
+```
 
-Bluetooth HID は入力先の OS へイベントを入れる仕組みで、他社アプリのフォーカスを指定する仕組みではない。離れたクラウドのリモートホストにも BLE 電波だけでは届かない。この二点が「どのリモートデスクトップにも同じ机上入力を送る」という要求の境界になる。
+**公開 visionOS API では、既存の任意のネイティブアプリを DeskBridge 内で動かすことはできない。** アプリのウィンドウはそのアプリのシーンであり、OS が複数アプリのシーンを合成する。操作も OS が対象シーンを所有するアプリへ配送する。DeskBridge のウィンドウやボリュームを他アプリと並べて表示することはできるが、他アプリのウィンドウを子画面として取り込んだり、全アプリの入力を横取りして再配送したりする公開経路はない。DeskBridge が没入空間を開くと、通常は他アプリのウィンドウが隠れる。
 
-## アプリと機器の分担
+一方、**遠隔のアプリ画面を DeskBridge 内へ表示する「リモート作業空間」**は構築できる。Mac 側でアプリ画面を配信し、DeskBridge がそれを表示して、机上入力を Mac に戻す。RDP／VNC などのリモート接続を DeskBridge 自身へ統合する方法もある。これは Mac やリモートホストで動くアプリの映像と入力を扱う方式で、Vision Pro にインストール済みの他社ネイティブアプリを再実行する方式ではない。
 
-1. **Vision Pro アプリ**: 共有空間に机上面を表示し、標準の直接タップ／ドラッグを入力イベントに変える。机・指先の生データを使う自動検出は引き続き没入空間の機能。
-2. **Mac アプリ**: 現在のソフトウェア経路。Mac 側の接続承認とアクセシビリティ許可を受けて、Mac 全体に入力する。BLE HID 経路を使う場合は必須ではない。
-3. **外付け BLE HID ブリッジ**: 将来の追加経路。Vision Pro から受けたイベントを標準キーボード／マウスの HID レポートへ変換し、明示的にペアリングした一台の入力先へ送る。
+## 入力先ごとの見通し
 
-任意の visionOS アプリでそのアプリのフォーカスを保ったまま机の打鍵を検出するには、DeskBridge ボリュームへのタップに依存しない独立した物理センサーなど、別の入力検出手段が必要になる可能性が高い。BLE ブリッジだけを足しても Vision Pro の手追跡 API の制約は変わらない。
+| 入力先 | 現実的な経路 | 未検証・制約 |
+| --- | --- | --- |
+| Mac 仮想ディスプレイと Mac 上のアプリ | 現行の `CGEvent`。仮想HIDへの切り替えも可能性あり | 現行版も Vision Pro 実機での入力確認が必要。仮想HIDには権限が要る。 |
+| Mac 上のリモートデスクトップクライアント | Mac へ入力し、クライアントがリモートホストへ転送 | クライアント側の入力転送設定に依存する。 |
+| Vision Pro 上の他社アプリ | Mac 仮想ディスプレイ中の入力共有を仮想HID経由で使う案 | 仮想HIDの共有対象判定とフォーカスを実機で確認する。 |
+| DeskBridge 内で動くリモート作業空間 | Mac の画面配信、または DeskBridge にリモート接続を統合 | 接続先と表示方式ごとの実装が必要。 |
+| DeskBridge 内で動く任意の visionOS ネイティブアプリ | 公開 API に経路なし | OS のアプリ・シーン・入力配送の境界を越える。 |
 
-## 実装前の検証順
+共有空間のボリュームなら通常時に他アプリと並べて表示できる。ただし現行の入力検出は visionOS 標準のタップ／ドラッグで、写真のような全指の打鍵とは異なる。没入空間でしか得られない ARKit の指先・机の生データを、シールド構成で通常時に取得できるようにはならない。
 
-1. 実機で現在の共有空間ボリュームと Mac 仮想ディスプレイの同時表示・入力を測る。
-2. BLE HID 試作機を Mac にペアリングし、キー、ポインタ、クリック、スクロールを確認する。
-3. Vision Pro アプリから認証したローカル接続で試作機を操作し、切断時に押下中のキー／ボタンを解放する。
-4. 同じ試作機を Vision Pro にペアリングし、DeskBridge ボリュームを触った直後に他社アプリへ入力が届くかを調べる。
-5. 結果に応じ、visionOS アプリ向けの独立センサー、または対応するリモートデスクトップを DeskBridge 内へ統合する方式を判断する。
+## 次に確認する順序
+
+1. Vision Pro 実機で、現行の共有空間ボリュームと Mac 仮想ディスプレイを同時に操作する。
+2. Mac の仮想HID権限を取得できるか確認し、権限がある環境で仮想キーボード／マウスの入力を試作する。
+3. Mac 仮想ディスプレイから visionOS の他アプリへ、その仮想HID入力が共有されるか測る。
+4. アプリを DeskBridge 内へ集約したい場合は、まず Mac 画面を DeskBridge 内に表示するリモート作業空間を別機能として実装する。
 
 ## 参照
 
-- [Apple: CBPeripheralManager](https://developer.apple.com/documentation/corebluetooth/cbperipheralmanager) — visionOS で周辺機器サービスを広告できない。
-- [Apple: visionOS render pipeline](https://developer.apple.com/documentation/visionos/understanding-the-visionos-render-pipeline) — OS が操作対象のシーンを所有するアプリへ入力を配送する。
-- [Apple: visionOS Get Started](https://developer.apple.com/visionos/get-started/) — 接続したキーボード・ポインティングデバイスの入力配送。
-- [Apple: visionOS app availability](https://developer.apple.com/documentation/visionos/determining-whether-to-bring-your-app-to-visionos) — visionOS ではキーボード拡張・ドライバー拡張をロードしない。
-- [Apple: Vision Pro Bluetooth accessories](https://support.apple.com/guide/apple-vision-pro/connect-bluetooth-accessories-tanaa651a58d/27/visionos/27) — キーボード／マウスの接続。
-- [Espressif: ESP-IDF BLE HID example](https://github.com/espressif/esp-idf/tree/v5.5.1/examples/bluetooth/esp_hid_device) — BLE HID デバイスの実装例。
-- [Espressif: ESP32-S3 Wi-Fi/BLE coexistence](https://docs.espressif.com/projects/esp-idf/en/v5.1/esp32s3/api-guides/coexist.html) — 同時利用の条件。
+- [Apple: CoreHID 仮想デバイスの作成](https://developer.apple.com/documentation/corehid/creatingvirtualdevices) — macOS 上のソフトウェア HID 機器。
+- [Apple: 仮想HID権限](https://developer.apple.com/documentation/bundleresources/entitlements/com.apple.developer.hid.virtual.device) — 仮想機器を作るアプリの権限。
+- [Apple: Mac と Vision Pro の入力共有](https://support.apple.com/en-au/118521) — Mac 仮想ディスプレイ中に Mac 入力機器で visionOS アプリを操作できる。
+- [Apple: CBPeripheralManager](https://developer.apple.com/documentation/corebluetooth/cbperipheralmanager) — visionOS は周辺機器サービスを広告できない。
+- [Apple: visionOS のシーン](https://developer.apple.com/documentation/visionos/presenting-windows-and-spaces) — アプリ自身のシーンと没入空間の挙動。
+- [Apple: visionOS の描画と入力配送](https://developer.apple.com/documentation/visionos/understanding-the-visionos-render-pipeline) — OS がシーンを合成し、所有アプリへ入力を渡す。
