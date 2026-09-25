@@ -1,0 +1,54 @@
+name: DeskBridge
+options:
+  bundleIdPrefix: dev.simureal
+  deploymentTarget:
+    macOS: "15.0"
+    visionOS: "26.0"
+settings:
+  base:
+    SWIFT_VERSION: "5.0"
+    SWIFT_STRICT_CONCURRENCY: minimal
+    DEVELOPMENT_TEAM: ""
+targets:
+  DeskBridgeMac:
+    type: application
+    platform: macOS
+    sources:
+      - path: Mac
+      - path: Shared
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: dev.simureal.DeskBridgeMac
+        MACOSX_DEPLOYMENT_TARGET: "15.0"
+        ENABLE_APP_SANDBOX: NO
+        CODE_SIGN_ENTITLEMENTS: ""
+    info:
+      path: Mac/Info.plist
+      properties:
+        CFBundleDisplayName: DeskBridge for Mac
+        CFBundleDevelopmentRegion: ja
+        LSApplicationCategoryType: public.app-category.productivity
+        NSLocalNetworkUsageDescription: Apple Vision Pro と暗号化接続して机上の入力を受け取ります。
+        NSBonjourServices:
+          - _deskbridge._tcp
+  DeskBridgeVision:
+    type: application
+    platform: visionOS
+    sources:
+      - path: Vision
+      - path: Shared
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: dev.simureal.DeskBridgeVision
+        XROS_DEPLOYMENT_TARGET: "26.0"
+        TARGETED_DEVICE_FAMILY: 7
+    info:
+      path: Vision/Info.plist
+      properties:
+        CFBundleDisplayName: DeskBridge
+        CFBundleDevelopmentRegion: ja
+        NSHandsTrackingUsageDescription: 机上の仮想キーとトラックパッドに触れた指先を検出します。
+        NSWorldSensingUsageDescription: 机の位置と向きを検出して仮想キーを配置します。
+        NSLocalNetworkUsageDescription: Mac 上の DeskBridge と暗号化接続して入力を送ります。
+        NSBonjourServices:
+          - _deskbridge._tcp

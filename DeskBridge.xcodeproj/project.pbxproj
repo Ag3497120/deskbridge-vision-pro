@@ -1,0 +1,418 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		0E6DC49AFC9266662A2714BA /* DeskProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23688A2F3A982611AD58CC85 /* DeskProtocol.swift */; };
+		2861F504D262EB953549A7DC /* DeskLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAA4B2F6B348D893AC554B11 /* DeskLayout.swift */; };
+		3844A08F52AD6A9E3059F9F9 /* MacBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 565F56FCB1F8C9204235AAFE /* MacBridge.swift */; };
+		4A23752A6B81CABB6231897B /* DeskBridgeVisionApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A6374EE330F59EAB161A710 /* DeskBridgeVisionApp.swift */; };
+		551FC3C4340BA04CF62D09EE /* DeskSceneModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB027BE151769CA7F7D647E0 /* DeskSceneModel.swift */; };
+		6AC5A9098D7C4CB5E415584B /* DeskVisualFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74199DB7C68EF1A5E585D1EF /* DeskVisualFactory.swift */; };
+		8595B4F7704B5848B304DAE0 /* DeskLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAA4B2F6B348D893AC554B11 /* DeskLayout.swift */; };
+		ADBA73480476B7A84D0EEFA0 /* SharedDeskView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 747A0883DF2F9C2FBBAC5940 /* SharedDeskView.swift */; };
+		C159E81448E9FE2283489BA2 /* DeskProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23688A2F3A982611AD58CC85 /* DeskProtocol.swift */; };
+		CD217E228FB418EF7B910305 /* VisionBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4766601B3DA7DE703F00A9EC /* VisionBridge.swift */; };
+		F2B2DEC84270C3208697EBE7 /* DeskBridgeMacApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68026C46AB5910D91FA23EF5 /* DeskBridgeMacApp.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		1870E542521F03EB32766882 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		23688A2F3A982611AD58CC85 /* DeskProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeskProtocol.swift; sourceTree = "<group>"; };
+		4766601B3DA7DE703F00A9EC /* VisionBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisionBridge.swift; sourceTree = "<group>"; };
+		4A6374EE330F59EAB161A710 /* DeskBridgeVisionApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeskBridgeVisionApp.swift; sourceTree = "<group>"; };
+		565F56FCB1F8C9204235AAFE /* MacBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacBridge.swift; sourceTree = "<group>"; };
+		68026C46AB5910D91FA23EF5 /* DeskBridgeMacApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeskBridgeMacApp.swift; sourceTree = "<group>"; };
+		6C3B33EECE82A99AC75BA242 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		74199DB7C68EF1A5E585D1EF /* DeskVisualFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeskVisualFactory.swift; sourceTree = "<group>"; };
+		747A0883DF2F9C2FBBAC5940 /* SharedDeskView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedDeskView.swift; sourceTree = "<group>"; };
+		9193D8F896041A3510765395 /* DeskBridgeVision.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = DeskBridgeVision.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		AB027BE151769CA7F7D647E0 /* DeskSceneModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeskSceneModel.swift; sourceTree = "<group>"; };
+		BAA4B2F6B348D893AC554B11 /* DeskLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeskLayout.swift; sourceTree = "<group>"; };
+		D57B24FE130CF0B39B7133F6 /* DeskBridgeMac.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DeskBridgeMac.app; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		31D403B38075254C6BCDA94E /* Vision */ = {
+			isa = PBXGroup;
+			children = (
+				4A6374EE330F59EAB161A710 /* DeskBridgeVisionApp.swift */,
+				AB027BE151769CA7F7D647E0 /* DeskSceneModel.swift */,
+				74199DB7C68EF1A5E585D1EF /* DeskVisualFactory.swift */,
+				6C3B33EECE82A99AC75BA242 /* Info.plist */,
+				747A0883DF2F9C2FBBAC5940 /* SharedDeskView.swift */,
+				4766601B3DA7DE703F00A9EC /* VisionBridge.swift */,
+			);
+			path = Vision;
+			sourceTree = "<group>";
+		};
+		3222537A9B685EF6909A0C11 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				D57B24FE130CF0B39B7133F6 /* DeskBridgeMac.app */,
+				9193D8F896041A3510765395 /* DeskBridgeVision.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		9F8EC8E280134DD1140606D1 /* Shared */ = {
+			isa = PBXGroup;
+			children = (
+				BAA4B2F6B348D893AC554B11 /* DeskLayout.swift */,
+				23688A2F3A982611AD58CC85 /* DeskProtocol.swift */,
+			);
+			path = Shared;
+			sourceTree = "<group>";
+		};
+		A1555886C68166AC4AC36DD3 /* Mac */ = {
+			isa = PBXGroup;
+			children = (
+				68026C46AB5910D91FA23EF5 /* DeskBridgeMacApp.swift */,
+				1870E542521F03EB32766882 /* Info.plist */,
+				565F56FCB1F8C9204235AAFE /* MacBridge.swift */,
+			);
+			path = Mac;
+			sourceTree = "<group>";
+		};
+		B780C0412AABE57099126B81 = {
+			isa = PBXGroup;
+			children = (
+				A1555886C68166AC4AC36DD3 /* Mac */,
+				9F8EC8E280134DD1140606D1 /* Shared */,
+				31D403B38075254C6BCDA94E /* Vision */,
+				3222537A9B685EF6909A0C11 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		1B1A40729C6AB10F02712801 /* DeskBridgeVision */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A0AB2C2CF04BFB941425CDAA /* Build configuration list for PBXNativeTarget "DeskBridgeVision" */;
+			buildPhases = (
+				EFDFA9EF45475577283E121E /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = DeskBridgeVision;
+			packageProductDependencies = (
+			);
+			productName = DeskBridgeVision;
+			productReference = 9193D8F896041A3510765395 /* DeskBridgeVision.app */;
+			productType = "com.apple.product-type.application";
+		};
+		6B023AB54D758002C5A5FF56 /* DeskBridgeMac */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = FBCD5A89F00FBBD313170CBB /* Build configuration list for PBXNativeTarget "DeskBridgeMac" */;
+			buildPhases = (
+				0000146DE166778B68AE2353 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = DeskBridgeMac;
+			packageProductDependencies = (
+			);
+			productName = DeskBridgeMac;
+			productReference = D57B24FE130CF0B39B7133F6 /* DeskBridgeMac.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		2962BDD3732D4A4DD0DF44D0 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+					1B1A40729C6AB10F02712801 = {
+						DevelopmentTeam = "";
+					};
+					6B023AB54D758002C5A5FF56 = {
+						DevelopmentTeam = "";
+					};
+				};
+			};
+			buildConfigurationList = C0ABCD7CECBC2F998B6705F5 /* Build configuration list for PBXProject "DeskBridge" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = B780C0412AABE57099126B81;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 3222537A9B685EF6909A0C11 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				6B023AB54D758002C5A5FF56 /* DeskBridgeMac */,
+				1B1A40729C6AB10F02712801 /* DeskBridgeVision */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		0000146DE166778B68AE2353 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F2B2DEC84270C3208697EBE7 /* DeskBridgeMacApp.swift in Sources */,
+				2861F504D262EB953549A7DC /* DeskLayout.swift in Sources */,
+				C159E81448E9FE2283489BA2 /* DeskProtocol.swift in Sources */,
+				3844A08F52AD6A9E3059F9F9 /* MacBridge.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		EFDFA9EF45475577283E121E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4A23752A6B81CABB6231897B /* DeskBridgeVisionApp.swift in Sources */,
+				8595B4F7704B5848B304DAE0 /* DeskLayout.swift in Sources */,
+				0E6DC49AFC9266662A2714BA /* DeskProtocol.swift in Sources */,
+				551FC3C4340BA04CF62D09EE /* DeskSceneModel.swift in Sources */,
+				6AC5A9098D7C4CB5E415584B /* DeskVisualFactory.swift in Sources */,
+				ADBA73480476B7A84D0EEFA0 /* SharedDeskView.swift in Sources */,
+				CD217E228FB418EF7B910305 /* VisionBridge.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		15583BF902367274B6BEB3A5 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = "";
+				COMBINE_HIDPI_IMAGES = YES;
+				ENABLE_APP_SANDBOX = NO;
+				INFOPLIST_FILE = Mac/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 15.0;
+				PRODUCT_BUNDLE_IDENTIFIER = dev.simureal.DeskBridgeMac;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		2FE8C76CFBB8A909D354C317 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				INFOPLIST_FILE = Vision/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = dev.simureal.DeskBridgeVision;
+				SDKROOT = xros;
+				TARGETED_DEVICE_FAMILY = 7;
+				XROS_DEPLOYMENT_TARGET = 26.0;
+			};
+			name = Debug;
+		};
+		3789EFC289923406238399E2 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = "";
+				COMBINE_HIDPI_IMAGES = YES;
+				ENABLE_APP_SANDBOX = NO;
+				INFOPLIST_FILE = Mac/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 15.0;
+				PRODUCT_BUNDLE_IDENTIFIER = dev.simureal.DeskBridgeMac;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		3C000EB9522310CC5363220A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 15.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_STRICT_CONCURRENCY = minimal;
+				SWIFT_VERSION = 5.0;
+				XROS_DEPLOYMENT_TARGET = 26.0;
+			};
+			name = Debug;
+		};
+		452D8D5F48DEF27DCEEE752C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				INFOPLIST_FILE = Vision/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = dev.simureal.DeskBridgeVision;
+				SDKROOT = xros;
+				TARGETED_DEVICE_FAMILY = 7;
+				XROS_DEPLOYMENT_TARGET = 26.0;
+			};
+			name = Release;
+		};
+		49F336440664EECF679F7765 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = "";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 15.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_STRICT_CONCURRENCY = minimal;
+				SWIFT_VERSION = 5.0;
+				XROS_DEPLOYMENT_TARGET = 26.0;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		A0AB2C2CF04BFB941425CDAA /* Build configuration list for PBXNativeTarget "DeskBridgeVision" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2FE8C76CFBB8A909D354C317 /* Debug */,
+				452D8D5F48DEF27DCEEE752C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		C0ABCD7CECBC2F998B6705F5 /* Build configuration list for PBXProject "DeskBridge" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3C000EB9522310CC5363220A /* Debug */,
+				49F336440664EECF679F7765 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		FBCD5A89F00FBBD313170CBB /* Build configuration list for PBXNativeTarget "DeskBridgeMac" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				15583BF902367274B6BEB3A5 /* Debug */,
+				3789EFC289923406238399E2 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 2962BDD3732D4A4DD0DF44D0 /* Project object */;
+}
