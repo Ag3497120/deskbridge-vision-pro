@@ -1,3 +1,4 @@
+import AppKit
 import SwiftUI
 
 @main
@@ -14,6 +15,22 @@ struct DeskBridgeMacApp: App {
 
                 LabeledContent("接続", value: bridge.status)
                 LabeledContent("アクセシビリティ", value: bridge.accessibilityAllowed ? "許可済み" : "未許可")
+                LabeledContent("キーの送信先", value: bridge.targetApplicationName ?? "Mac の前面アプリ")
+                HStack {
+                    Menu("キーの送信先を選ぶ") {
+                        ForEach(NSWorkspace.shared.runningApplications
+                            .filter { !$0.isTerminated && $0.activationPolicy == .regular &&
+                                $0.bundleIdentifier != nil }
+                            .sorted { ($0.localizedName ?? "") < ($1.localizedName ?? "") },
+                                id: \.processIdentifier) { app in
+                            Button("\(app.localizedName ?? "不明") (\(app.bundleIdentifier ?? ""))") {
+                                if let id = app.bundleIdentifier { bridge.selectTarget(bundleID: id) }
+                            }
+                        }
+                    }
+                    Button("固定を解除") { bridge.clearTarget() }
+                        .disabled(bridge.targetApplicationName == nil)
+                }
 
                 if let peer = bridge.pendingPeer {
                     HStack {
@@ -39,7 +56,7 @@ struct DeskBridgeMacApp: App {
                 Text("同じローカルネットワークの Vision Pro で DeskBridge を開き、この Mac を選択してください。接続は暗号化され、Mac 側で毎回許可します。")
                     .font(.callout)
                     .foregroundStyle(.secondary)
-                Text("入力中は macOS の現在の入力ソースが使われます。現段階のキー配置は ANSI 英語配列です。")
+                Text("送信先を固定する場合は、その Mac アプリで入力欄を一度選んでください。入力中は macOS の現在の入力ソースが使われます。キー配置は ANSI 英語配列です。")
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }

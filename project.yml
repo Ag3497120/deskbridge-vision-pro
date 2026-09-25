@@ -49,6 +49,8 @@ targets:
         CFBundleDisplayName: DeskBridge
         CFBundleShortVersionString: 0.1.0
         CFBundleDevelopmentRegion: ja
+        UIApplicationSceneManifest:
+          UIApplicationSupportsMultipleScenes: true
         NSHandsTrackingUsageDescription: 机上の仮想キーとトラックパッドに触れた指先を検出します。
         NSWorldSensingUsageDescription: 机の位置と向きを検出して仮想キーを配置します。
         NSLocalNetworkUsageDescription: Mac 上の DeskBridge と暗号化接続して入力を送ります。

@@ -88,6 +88,29 @@ enum DeskLayout {
         keys.first { $0.contains(x: point.x, z: point.z) }
     }
 
+    /// Map a contact on the flat keyboard surface to a key. Tiny gaps between
+    /// caps are assigned to the nearest cap; contacts outside the keyboard are
+    /// ignored. This uses the contact point, not the direction of the gaze ray.
+    static func keyIndex(at point: SIMD3<Float>) -> Int? {
+        guard abs(point.x - keyboardCenterX) <= keyboardWidth / 2,
+              abs(point.z) <= keyboardDepth / 2 else { return nil }
+        let nearest = keys.enumerated().min { lhs, rhs in
+            distanceSquared(to: lhs.element, from: point) <
+                distanceSquared(to: rhs.element, from: point)
+        }
+        guard let nearest,
+              distanceSquared(to: nearest.element, from: point) <= 0.006 * 0.006 else {
+            return nil
+        }
+        return nearest.offset
+    }
+
+    private static func distanceSquared(to key: DeskKey, from point: SIMD3<Float>) -> Float {
+        let dx = max(0, abs(point.x - key.centerX) - key.width / 2)
+        let dz = max(0, abs(point.z - key.centerZ) - key.depth / 2)
+        return dx * dx + dz * dz
+    }
+
     static func isOnTrackpad(_ point: SIMD3<Float>) -> Bool {
         abs(point.x - trackpadCenterX) <= trackpadWidth / 2 &&
         abs(point.z) <= trackpadDepth / 2

@@ -21,6 +21,13 @@ enum DeskLayoutTests {
               let shift = DeskLayout.keys.first(where: { $0.label == "⇧" }) else {
             fatalError("Required keys are missing")
         }
+        let aIndex = DeskLayout.keys.firstIndex(of: a)!
+        assert(DeskLayout.keyIndex(at: [a.centerX, 0.002, a.centerZ]) == aIndex)
+        assert(DeskLayout.keyIndex(at: [a.centerX, 0.05, a.centerZ]) == aIndex)
+        assert(DeskLayout.keyIndex(at: [1, 0, 0]) == nil)
+        // A glancing touch on a gap is assigned to the nearer cap.
+        assert(DeskLayout.keyIndex(at: [a.centerX + a.width / 2 + 0.001,
+                                        0.002, a.centerZ]) == aIndex)
         let engine = DeskInteraction()
         let aboveA = SIMD3<Float>(a.centerX, 0.06, a.centerZ)
         let onA = SIMD3<Float>(a.centerX, 0.005, a.centerZ)

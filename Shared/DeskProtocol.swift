@@ -42,3 +42,20 @@ struct InputEvent: Codable, Equatable {
         self.deltaY = deltaY
     }
 }
+
+/// Mac-side input readiness sent over the same encrypted session.
+struct MacInputStatus: Codable {
+    let version: Int
+    let type: String
+    let accessibilityAllowed: Bool
+    let inputEnabled: Bool
+    let targetName: String?
+
+    init(accessibilityAllowed: Bool, inputEnabled: Bool, targetName: String? = nil) {
+        version = 1
+        type = "macInputStatus"
+        self.accessibilityAllowed = accessibilityAllowed
+        self.inputEnabled = inputEnabled
+        self.targetName = targetName
+    }
+}

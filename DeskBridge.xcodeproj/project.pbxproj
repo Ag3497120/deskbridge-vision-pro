@@ -13,6 +13,7 @@
 		4A23752A6B81CABB6231897B /* DeskBridgeVisionApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A6374EE330F59EAB161A710 /* DeskBridgeVisionApp.swift */; };
 		551FC3C4340BA04CF62D09EE /* DeskSceneModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB027BE151769CA7F7D647E0 /* DeskSceneModel.swift */; };
 		6AC5A9098D7C4CB5E415584B /* DeskVisualFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74199DB7C68EF1A5E585D1EF /* DeskVisualFactory.swift */; };
+		8357FD566375DE18733C2DBC /* HomeKeyCuePlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 638D9DE7FB1E81FC19942BDE /* HomeKeyCuePlayer.swift */; };
 		8595B4F7704B5848B304DAE0 /* DeskLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAA4B2F6B348D893AC554B11 /* DeskLayout.swift */; };
 		ADBA73480476B7A84D0EEFA0 /* SharedDeskView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 747A0883DF2F9C2FBBAC5940 /* SharedDeskView.swift */; };
 		C159E81448E9FE2283489BA2 /* DeskProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23688A2F3A982611AD58CC85 /* DeskProtocol.swift */; };
@@ -26,6 +27,7 @@
 		4766601B3DA7DE703F00A9EC /* VisionBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisionBridge.swift; sourceTree = "<group>"; };
 		4A6374EE330F59EAB161A710 /* DeskBridgeVisionApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeskBridgeVisionApp.swift; sourceTree = "<group>"; };
 		565F56FCB1F8C9204235AAFE /* MacBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacBridge.swift; sourceTree = "<group>"; };
+		638D9DE7FB1E81FC19942BDE /* HomeKeyCuePlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeKeyCuePlayer.swift; sourceTree = "<group>"; };
 		68026C46AB5910D91FA23EF5 /* DeskBridgeMacApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeskBridgeMacApp.swift; sourceTree = "<group>"; };
 		6C3B33EECE82A99AC75BA242 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		74199DB7C68EF1A5E585D1EF /* DeskVisualFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeskVisualFactory.swift; sourceTree = "<group>"; };
@@ -43,6 +45,7 @@
 				4A6374EE330F59EAB161A710 /* DeskBridgeVisionApp.swift */,
 				AB027BE151769CA7F7D647E0 /* DeskSceneModel.swift */,
 				74199DB7C68EF1A5E585D1EF /* DeskVisualFactory.swift */,
+				638D9DE7FB1E81FC19942BDE /* HomeKeyCuePlayer.swift */,
 				6C3B33EECE82A99AC75BA242 /* Info.plist */,
 				747A0883DF2F9C2FBBAC5940 /* SharedDeskView.swift */,
 				4766601B3DA7DE703F00A9EC /* VisionBridge.swift */,
@@ -183,6 +186,7 @@
 				0E6DC49AFC9266662A2714BA /* DeskProtocol.swift in Sources */,
 				551FC3C4340BA04CF62D09EE /* DeskSceneModel.swift in Sources */,
 				6AC5A9098D7C4CB5E415584B /* DeskVisualFactory.swift in Sources */,
+				8357FD566375DE18733C2DBC /* HomeKeyCuePlayer.swift in Sources */,
 				ADBA73480476B7A84D0EEFA0 /* SharedDeskView.swift in Sources */,
 				CD217E228FB418EF7B910305 /* VisionBridge.swift in Sources */,
 			);

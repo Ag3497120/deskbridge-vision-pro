@@ -1,5 +1,6 @@
 import AppKit
 import ApplicationServices
+import Combine
 import CoreGraphics
 import Foundation
 import MultipeerConnectivity
@@ -10,6 +11,8 @@ final class MacBridge: NSObject, ObservableObject {
     @Published private(set) var accessibilityAllowed = false
     @Published private(set) var isConnected = false
     @Published private(set) var inputEnabled = false
+    @Published private(set) var receivedInputCount = 0
+    @Published private(set) var targetApplicationName: String?
 
     private let peerID = MCPeerID(displayName: String(ProcessInfo.processInfo.hostName.prefix(30)))
     private var session: MCSession!
@@ -17,6 +20,7 @@ final class MacBridge: NSObject, ObservableObject {
     private var invitationHandler: ((Bool, MCSession?) -> Void)?
     private let eventSource = CGEventSource(stateID: .hidSystemState)
     private var isDragging = false
+    private var targetApplicationPID: pid_t?
 
     override init() {
         super.init()
@@ -36,6 +40,7 @@ final class MacBridge: NSObject, ObservableObject {
     func refreshAccessibility() {
         accessibilityAllowed = AXIsProcessTrusted()
         if !accessibilityAllowed { inputEnabled = false }
+        publishInputStatus()
     }
 
     func requestAccessibility() {
@@ -48,6 +53,36 @@ final class MacBridge: NSObject, ObservableObject {
         if !enabled { releaseDrag() }
         refreshAccessibility()
         inputEnabled = enabled && accessibilityAllowed && isConnected
+        publishInputStatus()
+    }
+
+    /// Send keyboard events to one explicitly selected Mac application. The
+    /// app must already have a focused text field. Pointer events stay global.
+    @discardableResult
+    func selectTarget(bundleID: String) -> Bool {
+        guard let app = NSWorkspace.shared.runningApplications.first(where: {
+            $0.bundleIdentifier?.caseInsensitiveCompare(bundleID) == .orderedSame &&
+                !$0.isTerminated
+        }) else { return false }
+        targetApplicationPID = app.processIdentifier
+        targetApplicationName = app.localizedName ?? bundleID
+        publishInputStatus()
+        return true
+    }
+
+    func clearTarget() {
+        targetApplicationPID = nil
+        targetApplicationName = nil
+        publishInputStatus()
+    }
+
+    private func publishInputStatus() {
+        guard isConnected,
+              let data = try? JSONEncoder().encode(MacInputStatus(
+                accessibilityAllowed: accessibilityAllowed,
+                inputEnabled: inputEnabled,
+                targetName: targetApplicationName)) else { return }
+        try? session.send(data, toPeers: session.connectedPeers, with: .reliable)
     }
 
     func acceptInvitation() {
@@ -69,6 +104,13 @@ final class MacBridge: NSObject, ObservableObject {
         switch event.kind {
         case .key:
             guard let code = event.keyCode, code <= 127 else { return }
+            if let targetApplicationPID,
+               NSRunningApplication(processIdentifier: targetApplicationPID)?.isTerminated != false {
+                targetApplicationName = "送信先が終了しました"
+                inputEnabled = false
+                publishInputStatus()
+                return
+            }
             var flags: CGEventFlags = []
             if event.shift == true { flags.insert(.maskShift) }
             if event.command == true { flags.insert(.maskCommand) }
@@ -115,7 +157,11 @@ final class MacBridge: NSObject, ObservableObject {
     private func postKey(_ code: UInt16, down: Bool, flags: CGEventFlags = []) {
         let event = CGEvent(keyboardEventSource: eventSource, virtualKey: code, keyDown: down)
         event?.flags = flags
-        event?.post(tap: .cghidEventTap)
+        if let targetApplicationPID {
+            event?.postToPid(targetApplicationPID)
+        } else {
+            event?.post(tap: .cghidEventTap)
+        }
     }
 
     private func releaseDrag() {
@@ -155,6 +201,8 @@ extension MacBridge: MCSessionDelegate {
             if state != .connected {
                 self.releaseDrag()
                 self.inputEnabled = false
+            } else {
+                self.publishInputStatus()
             }
         }
     }
@@ -162,7 +210,10 @@ extension MacBridge: MCSessionDelegate {
     func session(_ session: MCSession, didReceive data: Data, fromPeer peerID: MCPeerID) {
         guard data.count <= 512,
               let event = try? JSONDecoder().decode(InputEvent.self, from: data) else { return }
-        DispatchQueue.main.async { self.inject(event) }
+        DispatchQueue.main.async {
+            self.receivedInputCount += 1
+            self.inject(event)
+        }
     }
 
     func session(_ session: MCSession, didReceive stream: InputStream,
